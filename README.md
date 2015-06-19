@@ -1,8 +1,10 @@
 # BirthdayInteger
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/birthday_integer`. To experiment with that code, run `bin/console` for an interactive prompt.
+Sometimes you need to handle dates in a year-agnostic date.  For example, a birthday.
 
-TODO: Delete this and the text above, and describe your gem
+At its most basic level, we are not interested in storing a date, but rather an integer from 1 to 366.
+
+In order to easily convert between this integer and a date, this gem provides a core extension to the Date class, that extracts the complexity of converting between dates and birthday integers.
 
 ## Installation
 
@@ -22,13 +24,71 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Converting a Ruby Date to your birthday integer
+
+```ruby
+your_birthday = Date.new(any_year, your_birthday_month, your_birthday_day)
+your_birthday.leap_yday # Returns an integer value representing your birthday
+```
+
+Why is it called leap_yday?  Because in a leap year, it's the same as your_birthday.yday.
+
+What is it in a non-leap year? Until February 28th, it's the same as your_birthday.yday.  Beginning March 1st, it's your_birthday.yday + 1.
+
+### Converting your birthday integer to a Ruby Date
+```ruby
+require "birthday_integer"
+```ruby
+
+Suppose your birthday is February 1st.  Your birthday integer is 32.
+
+```ruby
+Date.from_leap_yday(32) # returns the calendar date of your birthday this year
+```ruby
+
+You could also pass an optional year.
+
+```ruby
+Date.from_leap_yday(32, 2011) # returns the calendar date of your birthday in 2011
+```
+
+Now, suppose your birthday is March 1st.  Your birthday integer is 61.
+
+"Why not 60?", you ask.
+
+Because 60 means February 29th.
+
+"But there is no February 29th in the year I was born!", you declare.
+
+That may be true, but **SOME** years do have a February 29th, and you **DO** celebrate your birthday that year.  (Don't you?)
+
+Feb 29 obviously makes things a little more complicated.
+```ruby
+Date.from_leap_yday(60, 2012) # returns February 29th, 2012
+Date.from_leap_yday(60, 2014) # raises an ArgumentError
+```
+
+"OK, I get it," you say after some thought. "If 61 means March 1st, and 59 means February 28th, then 60 isn't a valid date in 2014. But what if your birthday is really February 29th?  When do you celebrate your birthday in 2014?"
+
+Well, you have 2 choices:
+
+#### Choice 1:
+```ruby
+Date.from_leap_yday_with_feb_29_birthdays_on_mar_1_in_common_years(60, 2014)
+```
+
+#### Choice 2:
+```ruby
+ArgumentError # There is no February 29th in 2014 since it is not a leap year
+```
+
+It's your choice.  Celebrate in March, or celebrate with an ArgumentError!
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
