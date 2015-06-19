@@ -36,15 +36,16 @@ Why is it called leap_yday?  Because in a leap year, it's the same as your_birth
 What is it in a non-leap year? Until February 28th, it's the same as your_birthday.yday.  Beginning March 1st, it's your_birthday.yday + 1.
 
 ### Converting your birthday integer to a Ruby Date
+
 ```ruby
 require "birthday_integer"
-```ruby
+```
 
 Suppose your birthday is February 1st.  Your birthday integer is 32.
 
 ```ruby
 Date.from_leap_yday(32) # returns the calendar date of your birthday this year
-```ruby
+```
 
 You could also pass an optional year.
 
@@ -63,6 +64,7 @@ Because 60 means February 29th.
 That may be true, but **SOME** years do have a February 29th, and you **DO** celebrate your birthday that year.  (Don't you?)
 
 Feb 29 obviously makes things a little more complicated.
+
 ```ruby
 Date.from_leap_yday(60, 2012) # returns February 29th, 2012
 Date.from_leap_yday(60, 2014) # raises an ArgumentError
@@ -73,11 +75,13 @@ Date.from_leap_yday(60, 2014) # raises an ArgumentError
 Well, you have 2 choices:
 
 #### Choice 1:
+
 ```ruby
 Date.from_leap_yday_with_feb_29_birthdays_on_mar_1_in_common_years(60, 2014)
 ```
 
 #### Choice 2:
+
 ```ruby
 ArgumentError # There is no February 29th in 2014 since it is not a leap year
 ```
